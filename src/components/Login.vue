@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { ref, reactive, computed  } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import type { Ref } from 'vue';
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
-import { setCookie } from 'typescript-cookie'
+import { setCookie } from 'typescript-cookie';
 import userApi from '@/api/user';
 
 import { GlobalStore } from '@/stores/global-store';
 const globalStore = GlobalStore();
+
+const emit = defineEmits<{
+  logined: []
+}>()
 
 interface FormState {
     username: string;
@@ -28,10 +32,12 @@ const onSubmit = (values: any) => {
         globalStore.loginVisible = false;
         if (result.success) {
             sessionStorage.setItem('user', JSON.stringify(result.data.user));
+            sessionStorage.setItem('token',result.data.token);
             if(values.remember) {
                 setCookie('token', result.data.token, { expires: 7, path: '' });
             }
             message.success(result.message);
+            emit('logined');
         }else {
             message.error(result.message);
         }
@@ -51,6 +57,7 @@ const disabled = computed(() => {
             name="login_form"
             class="login-form"
             @finish="onSubmit"
+            :footer="null"
         >
             <a-form-item
                 label="用户名"
@@ -104,8 +111,5 @@ const disabled = computed(() => {
 .login-form-button {
     width: 100%;
     margin-bottom: 5px;
-}
-:deep(.ant-modal .ant-modal-footer) {
-    display: none;
 }
 </style>

@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { UserOutlined, ShoppingCartOutlined } from '@ant-design/icons-vue';
-import { ref, onBeforeMount } from 'vue'
-import type { Ref } from 'vue'
-import { GlobalStore } from '@/stores/global-store'
+import { ref, onBeforeMount } from 'vue';
+import { getCookie, removeCookie } from 'typescript-cookie';
+import type { Ref } from 'vue';
+
+import Login from './Login.vue';
+
+import { GlobalStore } from '@/stores/global-store';
+import userApi from '@/api/user';
 
 //相当于 angular @input
 // defineProps<{
@@ -10,15 +15,43 @@ import { GlobalStore } from '@/stores/global-store'
 // }>()
 
 const globalStore = GlobalStore();
-const userName: Ref<string> = ref('');
+const user: Ref<any> = ref();
 
 onBeforeMount(() => {
-  let user = sessionStorage.getItem('user');
-  userName.value = user ? JSON.parse(user).userName : '登录 | 注册'
+    let userStorage = sessionStorage.getItem('user');
+    if(userStorage){
+        user.value = JSON.parse(userStorage);
+    }else{
+        let token = getCookie('token');
+        if(token){
+            sessionStorage.setItem('token',token);
+            userApi.getUserInfo().then((result:any)=>{
+                if(result.success){
+                    sessionStorage.setItem('user',JSON.stringify(result.data.user));
+                    user.value = result.data.user;
+                }
+            })
+        }
+    }
 })
 
 const loginShow = () => {
-    globalStore.loginVisible = true;
+    if(!user.value){
+        globalStore.loginVisible = true;
+    }
+}
+
+const signOut = () => {
+    sessionStorage.clear();
+    removeCookie('token', { path: '' });
+    user.value = null;
+}
+
+const logined = () => {
+    let userStorage = sessionStorage.getItem('user');
+    if(userStorage){
+        user.value = JSON.parse(userStorage);
+    }
 }
 
 </script>
@@ -37,8 +70,30 @@ const loginShow = () => {
             </div>
             <ul class="action-list">
                 <li @click="loginShow">
-                    <UserOutlined style="font-size: 18px;"/>
-                    <span>{{ userName }}</span>
+                    <a-dropdown :placement="'bottom'" :trigger="['click']" v-if="user">
+                        <span>
+                            <UserOutlined style="font-size: 18px;"/>
+                            <span>{{ user.username }}</span>
+                        </span>
+                        <template #overlay>
+                            <a-menu>
+                                <a-menu-item>
+                                    <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
+                                        个人中心
+                                    </a>
+                                </a-menu-item>
+                                <a-menu-item>
+                                    <a @click="signOut">
+                                        退出登录
+                                    </a>
+                                </a-menu-item>
+                            </a-menu>
+                        </template>
+                    </a-dropdown>
+                    <template v-else>
+                        <UserOutlined style="font-size: 18px;"/>
+                        <span>登录 | 注册</span>
+                    </template>
                 </li>
                 <li>
                     <ShoppingCartOutlined style="font-size: 20px;"/>
@@ -49,6 +104,7 @@ const loginShow = () => {
         <h1>WELCOME TO THE <span class="theme-text">SWEET</span> SHOP</h1>
         <h4>No how sweet life, more is flatly light moved, feel that those with your heart, everything is as beautiful as cookies</h4>
     </header>
+    <Login @logined="logined"/>
 </template>
 
 <style>

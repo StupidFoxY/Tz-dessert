@@ -11,15 +11,15 @@ const login = (data?: any) => {
 		data,
 	})
 }
-// const test = (data?: any) => {
-// 	return http({
-// 		url: '/user/test',
-// 		method: 'GET',
-// 		params: data,
-// 	})
-// }
+const getUserInfo = (data?: any) => {
+	return http({
+		url: '/user',
+		method: 'GET',
+		params: data,
+	})
+}
 
 export default {
     login,
-	// test,
+	getUserInfo,
 }

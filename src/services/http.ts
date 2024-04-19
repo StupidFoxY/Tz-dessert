@@ -15,9 +15,9 @@ const service: AxiosInstance = axios.create({
 // 设置请求拦截
 service.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        const token = sessionStorage.getItem('token_manager');
+        const token = sessionStorage.getItem('token');
         if(token){
-            config.headers.Authorization = `Bearer ${token}`
+            config.headers.Authorization = token;
         }
         axiosLoaing.addLoading();
         return config;

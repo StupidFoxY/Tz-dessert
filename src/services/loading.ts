@@ -1,11 +1,8 @@
 import { GlobalStore } from '@/stores/global-store';
-let globalStore:any;
-setTimeout(()=>{
-    globalStore = GlobalStore();
-},0)
 export class AxiosLoading {
     loadingCount: number;
     loading:boolean; 
+    globalStore:any;
     constructor() {
         this.loadingCount = 0;
         this.loading = false;
@@ -13,7 +10,8 @@ export class AxiosLoading {
     initLoading(){
         this.loading = true;
         // 触发loading的动画插件
-        globalStore.spinning = true;
+        this.globalStore = GlobalStore();
+        this.globalStore.spinning = true;
     }
 
     addLoading(){
@@ -28,7 +26,7 @@ export class AxiosLoading {
             if (this.loadingCount === 1) {
                 this.loading = false;
                 // 关闭loading的动画插件
-                globalStore.spinning = false;
+                this.globalStore.spinning = false;
             }
             this.loadingCount--;
         }
