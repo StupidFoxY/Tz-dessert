@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { UserOutlined, ShoppingCartOutlined } from '@ant-design/icons-vue';
 import { ref, onBeforeMount } from 'vue';
+import { useRouter } from 'vue-router';
 import { getCookie, removeCookie } from 'typescript-cookie';
 import type { Ref } from 'vue';
 
@@ -16,6 +17,8 @@ import userApi from '@/api/user';
 
 const globalStore = GlobalStore();
 const user: Ref<any> = ref();
+const home: Ref<Boolean> = ref(true);
+const router = useRouter();
 
 onBeforeMount(() => {
     let userStorage = sessionStorage.getItem('user');
@@ -33,6 +36,9 @@ onBeforeMount(() => {
             })
         }
     }
+})
+router.beforeEach((to, from) => {
+    home.value = to.name == 'home' ? true : false
 })
 
 const loginShow = () => {
@@ -54,18 +60,22 @@ const logined = () => {
     }
 }
 
+const routerTo = (path: string) => {
+    router.push(path)
+}
+
 </script>
 
 <template>
-    <header class="bg-box">
+    <header class="bg-box" :class="{'home':home}">
         <div class="header">
             <div>
                 <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="50" height="50" />
                 <ul class="menu-list">
-                    <li>首页</li>
-                    <li>菜单</li>
-                    <li>烘焙食谱</li>
-                    <li>关于我们</li>
+                    <li @click="routerTo('/')">首页</li>
+                    <li @click="routerTo('/sweetlist')">甜品美食</li>
+                    <li @click="routerTo('/cookbook')">烘焙食谱</li>
+                    <li @click="routerTo('/aboutus')">关于我们</li>
                 </ul>
             </div>
             <ul class="action-list">
@@ -95,26 +105,33 @@ const logined = () => {
                         <span>登录 | 注册</span>
                     </template>
                 </li>
-                <li>
+                <li @click="routerTo('/shoppingcart')">
                     <ShoppingCartOutlined style="font-size: 20px;"/>
-                    <span>购物车</span>
+                    <a-badge :count="Object.keys(globalStore.shoppingCartItems).length">
+                        <span class="shopping-cart-text">购物车</span>
+                    </a-badge>
                 </li>
             </ul>
         </div>
-        <h1>WELCOME TO THE <span class="theme-text">SWEET</span> SHOP</h1>
-        <h4>No how sweet life, more is flatly light moved, feel that those with your heart, everything is as beautiful as cookies</h4>
+        <template :v-if="home">
+            <h1>WELCOME TO THE <span class="theme-text">SWEET</span> SHOP</h1>
+            <h4>No how sweet life, more is flatly light moved, feel that those with your heart, everything is as beautiful as cookies</h4>
+        </template>
     </header>
     <Login @logined="logined"/>
 </template>
 
-<style>
+<style scoped>
 .bg-box {
-    height: 800px;
+    height: 300px;
     /* background-image: url('../assets/home-bg.jpeg'); */
     background-color: #ccc;
     background-size: cover;
     background-position: center;
     padding-top: 20px;
+}
+.bg-box.home {
+    height: 800px;
 }
 .header {
     display: flex;
@@ -150,6 +167,10 @@ const logined = () => {
 }
 .action-list li span {
     margin-left: 4px;
+    color: #fff;
+}
+.action-list li span.shopping-cart-text {
+    margin-right: 10px;
 }
 .bg-box h1,
 .bg-box h4 {
