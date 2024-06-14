@@ -1,21 +1,21 @@
+<template>
+    <div class="hot-selling">
+      <h1>甜品美食</h1>
+      <ul class="tabs-list">
+          <li @click="toggleTab('cake')">蛋糕</li>
+          <li @click="toggleTab('bread')">面包</li>
+          <li @click="toggleTab('cookies')">饼干</li>
+          <li @click="toggleTab('sweet')">小食</li>
+      </ul>
+    </div>
+</template>
+
 <script setup lang="ts">
 
 const toggleTab = (tab: string) => {
     console.log("%c Line:4 🍤 tab", "color:#ffffff;background:#2eafb0", tab);
 }
 </script>
-
-<template>
-  <div class="hot-selling">
-    <h1>甜品美食</h1>
-    <ul class="tabs-list">
-        <li @click="toggleTab('cake')">蛋糕</li>
-        <li @click="toggleTab('bread')">面包</li>
-        <li @click="toggleTab('cookies')">饼干</li>
-        <li @click="toggleTab('sweet')">小食</li>
-    </ul>
-  </div>
-</template>
 
 <style scoped>
 .hot-selling{

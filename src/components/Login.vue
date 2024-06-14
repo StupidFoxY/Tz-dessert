@@ -1,54 +1,3 @@
-<script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
-import type { Ref } from 'vue';
-import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
-import { setCookie } from 'typescript-cookie';
-import userApi from '@/api/user';
-
-import { GlobalStore } from '@/stores/global-store';
-const globalStore = GlobalStore();
-
-const emit = defineEmits<{
-  logined: []
-}>()
-
-interface FormState {
-    username: string;
-    password: string;
-    remember: boolean;
-}
-const formState = reactive<FormState>({
-    username: '',
-    password: '',
-    remember: true,
-});
-const onSubmit = (values: any) => {
-    let params = {
-        username: values.username,
-        password: values.password,
-    }
-    userApi.login(params).then((result: any) => {
-        globalStore.loginVisible = false;
-        if (result.success) {
-            sessionStorage.setItem('user', JSON.stringify(result.data.user));
-            sessionStorage.setItem('token',result.data.token);
-            if(values.remember) {
-                setCookie('token', result.data.token, { expires: 7, path: '' });
-            }
-            message.success(result.message);
-            emit('logined');
-        }else {
-            message.error(result.message);
-        }
-    })
-};
-
-const disabled = computed(() => {
-    return !(formState.username && formState.password);
-});
-</script>
-
 <template>
     <a-modal v-model:open="globalStore.loginVisible" title="登录 | 注册">
         <a-form
@@ -99,6 +48,56 @@ const disabled = computed(() => {
         </a-form>
     </a-modal>
 </template>
+
+<script setup lang="ts">
+import { ref, reactive, computed } from 'vue';
+import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
+import { setCookie } from 'typescript-cookie';
+import userApi from '@/api/user';
+
+import { GlobalStore } from '@/stores/global-store';
+const globalStore = GlobalStore();
+
+const emit = defineEmits<{
+  logined: []
+}>()
+
+interface FormState {
+    username: string;
+    password: string;
+    remember: boolean;
+}
+const formState = reactive<FormState>({
+    username: '',
+    password: '',
+    remember: true,
+});
+const onSubmit = (values: any) => {
+    let params = {
+        username: values.username,
+        password: values.password,
+    }
+    userApi.login(params).then((result: any) => {
+        globalStore.loginVisible = false;
+        if (result.success) {
+            sessionStorage.setItem('user', JSON.stringify(result.data.user));
+            sessionStorage.setItem('token',result.data.token);
+            if(values.remember) {
+                setCookie('token', result.data.token, { expires: 7, path: '' });
+            }
+            message.success(result.message);
+            emit('logined');
+        }else {
+            message.error(result.message);
+        }
+    })
+};
+
+const disabled = computed(() => {
+    return !(formState.username && formState.password);
+});
+</script>
 
 <style scoped>
 .login-form {

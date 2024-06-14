@@ -1,71 +1,3 @@
-<script setup lang="ts">
-import { UserOutlined, ShoppingCartOutlined } from '@ant-design/icons-vue';
-import { ref, onBeforeMount } from 'vue';
-import { useRouter } from 'vue-router';
-import { getCookie, removeCookie } from 'typescript-cookie';
-import type { Ref } from 'vue';
-
-import Login from './Login.vue';
-
-import { GlobalStore } from '@/stores/global-store';
-import userApi from '@/api/user';
-
-//相当于 angular @input
-// defineProps<{
-//   msg: string
-// }>()
-
-const globalStore = GlobalStore();
-const user: Ref<any> = ref();
-const home: Ref<Boolean> = ref(true);
-const router = useRouter();
-
-onBeforeMount(() => {
-    let userStorage = sessionStorage.getItem('user');
-    if(userStorage){
-        user.value = JSON.parse(userStorage);
-    }else{
-        let token = getCookie('token');
-        if(token){
-            sessionStorage.setItem('token',token);
-            userApi.getUserInfo().then((result:any)=>{
-                if(result.success){
-                    sessionStorage.setItem('user',JSON.stringify(result.data.user));
-                    user.value = result.data.user;
-                }
-            })
-        }
-    }
-})
-router.beforeEach((to, from) => {
-    home.value = to.name == 'home' ? true : false
-})
-
-const loginShow = () => {
-    if(!user.value){
-        globalStore.loginVisible = true;
-    }
-}
-
-const signOut = () => {
-    sessionStorage.clear();
-    removeCookie('token', { path: '' });
-    user.value = null;
-}
-
-const logined = () => {
-    let userStorage = sessionStorage.getItem('user');
-    if(userStorage){
-        user.value = JSON.parse(userStorage);
-    }
-}
-
-const routerTo = (path: string) => {
-    router.push(path)
-}
-
-</script>
-
 <template>
     <header class="bg-box" :class="{'home':home}">
         <div class="header">
@@ -120,6 +52,73 @@ const routerTo = (path: string) => {
     </header>
     <Login @logined="logined"/>
 </template>
+
+<script setup lang="ts">
+import { UserOutlined, ShoppingCartOutlined } from '@ant-design/icons-vue';
+import { ref, onBeforeMount } from 'vue';
+import { useRouter } from 'vue-router';
+import { getCookie, removeCookie } from 'typescript-cookie';
+
+import Login from './Login.vue';
+
+import { GlobalStore } from '@/stores/global-store';
+import userApi from '@/api/user';
+
+//相当于 angular @input
+// defineProps<{
+//   msg: string
+// }>()
+
+const globalStore = GlobalStore();
+const user = ref<any>();
+const home = ref<boolean>(true);
+const router = useRouter();
+
+onBeforeMount(() => {
+    let userStorage = sessionStorage.getItem('user');
+    if(userStorage){
+        user.value = JSON.parse(userStorage);
+    }else{
+        let token = getCookie('token');
+        if(token){
+            sessionStorage.setItem('token',token);
+            userApi.getUserInfo().then((result:any)=>{
+                if(result.success){
+                    sessionStorage.setItem('user',JSON.stringify(result.data.user));
+                    user.value = result.data.user;
+                }
+            })
+        }
+    }
+})
+router.beforeEach((to, from) => {
+    home.value = to.name == 'home' ? true : false
+})
+
+const loginShow = () => {
+    if(!user.value){
+        globalStore.loginVisible = true;
+    }
+}
+
+const signOut = () => {
+    sessionStorage.clear();
+    removeCookie('token', { path: '' });
+    user.value = null;
+}
+
+const logined = () => {
+    let userStorage = sessionStorage.getItem('user');
+    if(userStorage){
+        user.value = JSON.parse(userStorage);
+    }
+}
+
+const routerTo = (path: string) => {
+    router.push(path)
+}
+
+</script>
 
 <style scoped>
 .bg-box {
