@@ -59,16 +59,17 @@ const tabClick: MenuProps['onClick'] = (e) => {
     sweetList.value = sweetListAll.value.filter((item) => item.type == e.key);
 };
 const addShoppingCart = (item:any) => {
-    let userStorage:string | null = sessionStorage.getItem('user');
-    if(userStorage){
-        if(Object.keys(globalStore.shoppingCartItems).includes(item.id)){
-            globalStore.shoppingCartItems[item.id]++;
-        }else{
-            globalStore.shoppingCartItems[item.id] = 1;
+    let exist:boolean = false;
+    globalStore.shoppingCartItems.forEach((cartItem:any) => {
+        if(cartItem.id == item.id){
+            exist = true;
+            cartItem.count++;
         }
-    }else{
-        globalStore.loginVisible = true;
+    });
+    if(!exist){
+        globalStore.shoppingCartItems.push({...item,count:1});
     }
+    localStorage.setItem('shoppingCartItems',JSON.stringify(globalStore.shoppingCartItems));
 };
 </script>
 

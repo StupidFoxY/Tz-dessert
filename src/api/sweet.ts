@@ -1,6 +1,7 @@
 import http from '@/services/http'
 const sweetApi = {
 	getSweetList: '/sweet',
+	getSweetDeatil: '/sweet/detail',
 }
 
 const getSweetList = (data?: any) => {
@@ -11,6 +12,15 @@ const getSweetList = (data?: any) => {
 	})
 }
 
+const getSweetDeatil = (data?: any) => {
+	return http({
+		url: sweetApi.getSweetDeatil,
+		method: 'POST',
+		data,
+	})
+}
+
 export default {
     getSweetList,
+	getSweetDeatil
 }

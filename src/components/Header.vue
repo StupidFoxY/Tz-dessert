@@ -39,7 +39,7 @@
                 </li>
                 <li @click="routerTo('/shoppingcart')">
                     <ShoppingCartOutlined style="font-size: 20px;"/>
-                    <a-badge :count="Object.keys(globalStore.shoppingCartItems).length">
+                    <a-badge :count="shoppingCartCounts()">
                         <span class="shopping-cart-text">购物车</span>
                     </a-badge>
                 </li>
@@ -75,7 +75,7 @@ const home = ref<boolean>(true);
 const router = useRouter();
 
 onBeforeMount(() => {
-    let userStorage = sessionStorage.getItem('user');
+    let userStorage:string | null = sessionStorage.getItem('user');
     if(userStorage){
         user.value = JSON.parse(userStorage);
     }else{
@@ -89,6 +89,11 @@ onBeforeMount(() => {
                 }
             })
         }
+    }
+
+    let shoppingCartItems:string | null = localStorage.getItem('shoppingCartItems');
+    if(shoppingCartItems){
+        globalStore.shoppingCartItems = JSON.parse(shoppingCartItems);
     }
 })
 router.beforeEach((to, from) => {
@@ -116,6 +121,14 @@ const logined = () => {
 
 const routerTo = (path: string) => {
     router.push(path)
+}
+
+const shoppingCartCounts = () => {
+    let count:number = 0;
+    globalStore.shoppingCartItems.forEach((item:any)=>[
+        count += item.count
+    ])
+    return count;
 }
 
 </script>

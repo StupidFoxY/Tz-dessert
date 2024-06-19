@@ -11,7 +11,7 @@ export const GlobalStore = defineStore('globalStore', () => {
 
   let loginVisible:Ref<boolean> = ref(false);
   let spinning:Ref<boolean> = ref(false);
-  let shoppingCartItems:Ref<any> = ref({});
+  let shoppingCartItems:Ref<any> = ref([]);
 
   return { 
     // count, 
