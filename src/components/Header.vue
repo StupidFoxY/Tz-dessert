@@ -37,11 +37,30 @@
                         <span>登录 | 注册</span>
                     </template>
                 </li>
-                <li @click="routerTo('/shoppingcart')">
-                    <ShoppingCartOutlined style="font-size: 20px;"/>
-                    <a-badge :count="shoppingCartCounts()">
-                        <span class="shopping-cart-text">购物车</span>
-                    </a-badge>
+                <li>
+                    <a-popover v-model:open="showCart" trigger="click" placement="bottomRight">
+                        <template #title>
+                            <div class="popover-title">
+                                <span>购物车</span>
+                                <a-button type="primary" @click="gotoCart" size="small">查看购物车</a-button>
+                            </div>
+                        </template>
+                        <template #content>
+                            <ul class="cart-list">
+                                <li class="cart-item" v-for="item in globalStore.shoppingCartItems">
+                                    <img :src="item.img" alt="">
+                                    <div class="cart-item-info">
+                                        <div class="cart-item-name">{{ item.name }}</div>
+                                        <div class="cart-item-count">x {{ item.count }}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <a-badge :count="shoppingCartCounts()">
+                            <ShoppingCartOutlined style="font-size: 20px;"/>
+                            <span class="shopping-cart-text">购物车</span>
+                        </a-badge>
+                    </a-popover>
                 </li>
             </ul>
         </div>
@@ -73,6 +92,7 @@ const globalStore = GlobalStore();
 const user = ref<any>();
 const home = ref<boolean>(true);
 const router = useRouter();
+const showCart = ref<boolean>(false);
 
 onBeforeMount(() => {
     let userStorage:string | null = sessionStorage.getItem('user');
@@ -121,6 +141,14 @@ const logined = () => {
 
 const routerTo = (path: string) => {
     router.push(path)
+}
+
+const gotoCart = () => {
+    showCart.value = false;
+    if(!user.value){
+        globalStore.loginVisible = true;
+    }
+    routerTo('/shoppingcart');
 }
 
 const shoppingCartCounts = () => {
@@ -182,8 +210,47 @@ const shoppingCartCounts = () => {
     color: #fff;
 }
 .action-list li span.shopping-cart-text {
-    margin-right: 10px;
+    margin-right: 7px;
 }
+:deep(.ant-badge .ant-badge-count) {
+    top: 3px;
+}
+.popover-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.popover-title > span {
+    font-weight: 600;
+    font-size: 16px;
+}
+.cart-list {
+    margin-bottom: 0;
+}
+.cart-item {
+    display: flex;
+    align-items: center;
+}
+.cart-item:not(:first-of-type) {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e9e9e9;
+}
+.cart-item img {
+    width: 50px;
+    margin-right: 15px;
+}
+.cart-item-info {
+    min-width: 200px;
+}
+.cart-item-info .cart-item-name {
+    font-size: 16px;
+}
+.cart-item-info .cart-item-count {
+    color: #999;
+}
+
 .bg-box h1,
 .bg-box h4 {
     width: 820px;

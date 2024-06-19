@@ -16,6 +16,10 @@ const delayTime = 500;
   </a-spin>
 </template>
 
-<style scoped>
+<style>
+.ant-popover-inner-content {
+    max-height: 300px;
+    overflow: auto;
+}
 
 </style>

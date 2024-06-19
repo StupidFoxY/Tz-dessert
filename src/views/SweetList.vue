@@ -10,12 +10,12 @@
     <div class="list-box">
         <a-card hoverable style="width: 240px; margin-right: 50px;" v-for="item in sweetList">
             <template #cover>
-                <img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
+                <img alt="example" :src="item.img" />
             </template>
             <a-card-meta :title="item.name">
                 <template #description>
                     <div class="card-des">
-                        <span>{{ item.price }}</span>
+                        <span>￥{{ item.price }}</span>
                         <a-button type="primary" shape="circle" :icon="h(ShoppingCartOutlined)" @click.stop="()=>{addShoppingCart(item)}"/>
                     </div>
                 </template>
@@ -81,8 +81,8 @@ const addShoppingCart = (item:any) => {
     display: flex;
     max-width: 1024px;
     margin: 0 auto;
-    flex-wrap: wrap;
     margin-top: 50px;
+    flex-wrap: wrap;
 }
 .card-des {
     display: flex;
