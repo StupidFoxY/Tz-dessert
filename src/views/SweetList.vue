@@ -15,7 +15,7 @@
             <a-card-meta :title="item.name">
                 <template #description>
                     <div class="card-des">
-                        <span>￥{{ item.price }}</span>
+                        <span>{{ globalStore.currencyFormat(item.price) }}</span>
                         <a-button type="primary" shape="circle" :icon="h(ShoppingCartOutlined)" @click.stop="()=>{addShoppingCart(item)}"/>
                     </div>
                 </template>

@@ -147,15 +147,16 @@ const gotoCart = () => {
     showCart.value = false;
     if(!user.value){
         globalStore.loginVisible = true;
+        return;
     }
     routerTo('/shoppingcart');
 }
 
 const shoppingCartCounts = () => {
     let count:number = 0;
-    globalStore.shoppingCartItems.forEach((item:any)=>[
+    globalStore.shoppingCartItems.forEach((item:any)=>{
         count += item.count
-    ])
+    })
     return count;
 }
 

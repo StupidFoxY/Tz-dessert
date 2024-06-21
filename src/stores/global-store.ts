@@ -13,12 +13,17 @@ export const GlobalStore = defineStore('globalStore', () => {
   let spinning:Ref<boolean> = ref(false);
   let shoppingCartItems:Ref<any> = ref([]);
 
+  const currencyFormat = (price:number) => {
+    return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(price);
+  }
+
   return { 
     // count, 
     // doubleCount, 
     // increment,
     loginVisible,
     spinning,
-    shoppingCartItems
+    shoppingCartItems,
+    currencyFormat,
   }
 })

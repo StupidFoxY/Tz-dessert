@@ -11,7 +11,7 @@
                             <a href="" class="list-title">{{ item.name }}</a>
                         </template>
                         <template #description>
-                            <span>￥{{ item.price }}</span>
+                            <span>{{ globalStore.currencyFormat(item.price) }}</span>
                         </template>
                     </a-list-item-meta>
 
@@ -20,36 +20,53 @@
                     </template>
                     <template #extra>
                         <div class="list-extra">
-                            <span class="brief-price">￥{{ item.price * item.count}}</span>
-                            <a-button shape="circle" :icon="h(CloseOutlined)" size="small" style="font-size: 10px;"/>
+                            <span class="brief-price">{{ globalStore.currencyFormat(item.price * item.count)}}</span>
+                            <a-button shape="circle" :icon="h(CloseOutlined)" size="small" style="font-size: 10px;" @click="removeItem(item)"/>
                         </div>
                     </template>
                 </a-list-item>
             </template>
             <template #footer>
-                <div>
-                    <b>ant design vue</b>
-                    footer part
+                <div class="list-footer">
+                    <span class="cart-count">已选{{ shoppingCartCounts() }}商品,</span>
+                    <span>合计:<span class="brief-price">{{ totalPrice() }}</span></span>
+                    <a-button type="primary">结算</a-button>
                 </div>
             </template>
         </a-list>
     </div>
 </template>
+
 <script lang="ts" setup>
 import { GlobalStore } from '@/stores/global-store';
-import { ref, onBeforeMount } from 'vue';
+import { ref } from 'vue';
 import { h } from 'vue';
 import { CloseOutlined } from '@ant-design/icons-vue';
-import sweetApi from '@/api/sweet';
-import { message } from 'ant-design-vue';
 
 const globalStore = GlobalStore();
-console.log("%c Line:6 🍋 globalStore", "color:#ffffff;background:#ed9ec7", globalStore.shoppingCartItems);
 
-onBeforeMount(() => {
-    
-})
+const shoppingCartCounts = () => {
+    let count:number = 0;
+    globalStore.shoppingCartItems.forEach((item:any)=>{
+        count += item.count
+    })
+    return count;
+}
+
+const totalPrice = () => {
+    let price = 0;
+    globalStore.shoppingCartItems.forEach((item:any)=>{
+        price += (item.count * item.price);
+    })
+    return globalStore.currencyFormat(price);
+}
+
+const removeItem = (curItem:any) => {
+    globalStore.shoppingCartItems = globalStore.shoppingCartItems.filter((item:any)=> curItem != item);
+    localStorage.setItem('shoppingCartItems', JSON.stringify(globalStore.shoppingCartItems));
+}
 </script>
+
 <style scoped>
 .content{
     max-width: 1024px;
@@ -72,8 +89,19 @@ onBeforeMount(() => {
     width: 150px;
     margin-left: 30px;
 }
-.list-extra .brief-price {
+.brief-price {
     color: brown;
-    font-size: 20px;
+    font-size: 18px;
+}
+.list-footer {
+    text-align: right;
+}
+.list-footer .cart-count {
+    color: #999;
+    margin-right: 5px;
+}
+.list-footer .brief-price {
+    margin-left: 5px;
+    margin-right: 20px;
 }
 </style>
