@@ -82,6 +82,7 @@ import Login from './Login.vue';
 
 import { GlobalStore } from '@/stores/global-store';
 import userApi from '@/api/user';
+import sweetApi from '@/api/sweet';
 
 //相当于 angular @input
 // defineProps<{
@@ -111,9 +112,22 @@ onBeforeMount(() => {
         }
     }
 
-    let shoppingCartItems:string | null = localStorage.getItem('shoppingCartItems');
-    if(shoppingCartItems){
-        globalStore.shoppingCartItems = JSON.parse(shoppingCartItems);
+    let cartItemsStr:string | null = localStorage.getItem('shoppingCartItems');
+    if(cartItemsStr){
+        let cartItems = JSON.parse(cartItemsStr);
+        let ids = []
+        for(let key in cartItems){
+            ids.push(key);
+        }
+        sweetApi.getSweetDeatil(ids).then((result:any) => {
+            console.log("%c Line:124 🍎 result", "color:#ffffff;background:#fca650", result);   
+            if(result.success){
+                result.data.forEach((item:any)=>{
+                    item.count = cartItems[item.id]
+                })
+                globalStore.shoppingCartItems = result.data
+            }
+        })
     }
 })
 router.beforeEach((to, from) => {

@@ -60,16 +60,19 @@ const tabClick: MenuProps['onClick'] = (e) => {
 };
 const addShoppingCart = (item:any) => {
     let exist:boolean = false;
+    let obj:any = {}
     globalStore.shoppingCartItems.forEach((cartItem:any) => {
         if(cartItem.id == item.id){
             exist = true;
             cartItem.count++;
         }
+        obj[cartItem.id] = cartItem.count;
     });
     if(!exist){
         globalStore.shoppingCartItems.push({...item,count:1});
+        obj[item.id] = 1;
     }
-    localStorage.setItem('shoppingCartItems',JSON.stringify(globalStore.shoppingCartItems));
+    localStorage.setItem('shoppingCartItems',JSON.stringify(obj));
 };
 </script>
 
