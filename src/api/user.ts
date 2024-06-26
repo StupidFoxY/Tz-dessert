@@ -2,6 +2,7 @@ import http from '@/services/http'
 const userApi = {
 	login: '/user/login',
 	getUserInfo: '/user',
+	getAddress: '/user/address',
 }
 
 // 登录
@@ -19,8 +20,16 @@ const getUserInfo = (data?: any) => {
 		params: data,
 	})
 }
+const getAddress = (data?: any) => {
+	return http({
+		url: userApi.getAddress,
+		method: 'GET',
+		params: data,
+	})
+}
 
 export default {
     login,
 	getUserInfo,
+	getAddress,
 }
