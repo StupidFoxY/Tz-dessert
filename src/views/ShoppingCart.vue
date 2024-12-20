@@ -1,5 +1,11 @@
 <template>
     <div class="content">
+        <a-steps
+            :current="0"
+            size="small"
+            :items="stepTitle"
+            class="step"
+        ></a-steps>
         <a-list item-layout="horizontal" :data-source="globalStore.shoppingCartItems" :bordered="true">
             <template #renderItem="{ item }">
                 <a-list-item>
@@ -41,13 +47,18 @@
 
 <script lang="ts" setup>
 import { GlobalStore } from '@/stores/global-store';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { h } from 'vue';
 import { CloseOutlined } from '@ant-design/icons-vue';
 
 const globalStore = GlobalStore();
 const router = useRouter();
+const stepTitle = reactive<any[]>([
+    { title: '购物车' },
+    { title: '提交订单' },
+    { title: '确认支付' },
+]);
 
 const shoppingCartCounts = () => {
     let count:number = 0;
@@ -102,6 +113,9 @@ const toSubmiPage = () => {
     max-width: 1024px;
     margin: 0 auto;
     margin-top: 50px;
+}
+.step {
+    margin-bottom: 40px;
 }
 .input-count {
     width: 50px;

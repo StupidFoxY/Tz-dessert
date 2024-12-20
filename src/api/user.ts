@@ -3,6 +3,8 @@ const userApi = {
 	login: '/user/login',
 	getUserInfo: '/user',
 	getAddress: '/user/address',
+	setAddressDefault: '/user/setAddressDefault',
+	deleteAddress: '/user/deleteAddress',
 }
 
 // 登录
@@ -27,9 +29,25 @@ const getAddress = (data?: any) => {
 		params: data,
 	})
 }
+const setAddressDefault = (data?: any) => {
+	return http({
+		url: userApi.setAddressDefault,
+		method: 'POST',
+		data,
+	})
+}
+const deleteAddress = (data?: any) => {
+	return http({
+		url: userApi.deleteAddress,
+		method: 'DELETE',
+		data,
+	})
+}
 
 export default {
     login,
 	getUserInfo,
 	getAddress,
+	setAddressDefault,
+	deleteAddress,
 }

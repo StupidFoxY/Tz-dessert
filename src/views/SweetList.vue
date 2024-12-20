@@ -82,7 +82,7 @@ const addShoppingCart = (item:any) => {
 }
 .list-box {
     display: flex;
-    max-width: 1024px;
+    max-width: 1220px;
     margin: 0 auto;
     margin-top: 50px;
     flex-wrap: wrap;

@@ -20,9 +20,7 @@
                         <template #overlay>
                             <a-menu>
                                 <a-menu-item>
-                                    <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-                                        个人中心
-                                    </a>
+                                    <RouterLink to="/user">个人中心</RouterLink>
                                 </a-menu-item>
                                 <a-menu-item>
                                     <a @click="signOut">
@@ -192,7 +190,7 @@ const shoppingCartCounts = () => {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    max-width: 1024px;
+    max-width: 1220px;
     margin: 0 auto;
 }
 .header > div,
